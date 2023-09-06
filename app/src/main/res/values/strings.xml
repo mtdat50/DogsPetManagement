@@ -6,4 +6,8 @@
     <string name="name">Name:</string>
     <string name="breed">Breed:</string>
     <string name="description">Description:</string>
+    <string name="save">Save</string>
+    <string name="example_dog_description">My hell brother who looks so cute and evil</string>
+    <string name="example_dog_breed">Chihuahua</string>
+    <string name="example_dog_name">Kiki</string>
 </resources>

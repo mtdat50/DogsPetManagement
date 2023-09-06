@@ -24,6 +24,10 @@ class SecondFragment : Fragment() {
     ): View {
 
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
+
+        binding.saveButton.setOnClickListener {
+
+        }
         return binding.root
 
     }
