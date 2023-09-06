@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogspetmanagement.model.AppViewModel
 import java.io.File
@@ -13,16 +14,20 @@ import java.io.File
 class ListAdapter(private val shareViewModel: AppViewModel): RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
 
     class ListViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-        val dogImageView: ImageView? = view.findViewById<ImageView>(R.id.dogImageView)
-        val dogNameView: TextView? = view.findViewById<TextView>(R.id.dogNameView)
-        val dogBreedView: TextView? = view.findViewById<TextView>(R.id.dogBreedView)
-        val dogDescriptionView: TextView? = view.findViewById<TextView>(R.id.dodDescriptionView)
+        val dogImageView: ImageView? = view.findViewById(R.id.dogImageView)
+        val dogNameView: TextView? = view.findViewById(R.id.dogNameView)
+        val dogBreedView: TextView? = view.findViewById(R.id.dogBreedView)
+        val dogDescriptionView: TextView? = view.findViewById(R.id.dodDescriptionView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val layout = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.list_item, parent, false)
+
+        layout.setOnClickListener {
+            layout.findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }
 
         return ListViewHolder(layout)
     }
@@ -38,5 +43,9 @@ class ListAdapter(private val shareViewModel: AppViewModel): RecyclerView.Adapte
         holder.dogNameView?.text = dogData.name
         holder.dogBreedView?.text = dogData.breed
         holder.dogDescriptionView?.text = dogData.description
+        holder.itemView.setOnClickListener {
+            shareViewModel.selectedDogInfo = dogData
+            it.findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }
     }
 }
