@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +41,7 @@ class FirstFragment : Fragment() {
         sharedViewModel.dogList.add(AppViewModel.DogInfo("", "AAAAA", "BBBB", "recycleView test2"))
 
         val dogListView = binding.dogList
-        val adapter = ListAdapter(sharedViewModel)
+        val adapter = ListAdapter(requireContext() , sharedViewModel)
         dogListView.layoutManager = LinearLayoutManager(requireContext())
         dogListView.adapter = adapter
 
