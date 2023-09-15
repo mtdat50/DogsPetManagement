@@ -1,6 +1,8 @@
 package com.example.dogspetmanagement.model
 
 import androidx.lifecycle.ViewModel
+import androidx.room.Room
+import com.example.dogspetmanagement.database.Dog
 
 class AppViewModel: ViewModel() {
     class DogInfo(private val _imagePath: String = "",
@@ -17,5 +19,13 @@ class AppViewModel: ViewModel() {
     var dogList = mutableListOf<DogInfo>()
     var searchResult = mutableListOf<DogInfo>()
     var selectedDogInfo = DogInfo()
+
+    fun loadDogList(queryResult: List<Dog>): kotlin.collections.MutableList<DogInfo>  {
+        val convertedList = mutableListOf<DogInfo>()
+        for (dog in queryResult)
+            convertedList.add(DogInfo(dog.imagePath, dog.name, dog.breed, dog.description))
+
+        return convertedList
+    }
 
 }

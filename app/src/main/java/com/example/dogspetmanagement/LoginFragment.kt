@@ -1,0 +1,51 @@
+package com.example.dogspetmanagement
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.example.dogspetmanagement.databinding.FragmentLoginBinding
+import com.example.dogspetmanagement.model.AppViewModel
+import android.app.ActionBar as ActionBar
+
+
+class LoginFragment : Fragment() {
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        // Inflate the layout for this fragment
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.loginButton.setOnClickListener {
+//            TODO("LOGIN")
+            if (true) { //if username and password are correct
+                findNavController().navigate(R.id.action_loginFragment_to_FirstFragment)
+                (activity as AppCompatActivity).supportActionBar?.show()
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+}

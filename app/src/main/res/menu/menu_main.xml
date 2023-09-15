@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/SearchFragment"
         android:title="Search"
         app:showAsAction="ifRoom" />
 

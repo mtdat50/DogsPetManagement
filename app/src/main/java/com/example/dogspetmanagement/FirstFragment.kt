@@ -1,17 +1,24 @@
 package com.example.dogspetmanagement
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.example.dogspetmanagement.database.AppDatabase
+import com.example.dogspetmanagement.database.DogDao
 import com.example.dogspetmanagement.databinding.FragmentFirstBinding
 import com.example.dogspetmanagement.model.AppViewModel
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -19,6 +26,7 @@ import com.example.dogspetmanagement.model.AppViewModel
 class FirstFragment : Fragment() {
     private val sharedViewModel: AppViewModel by activityViewModels()
     private var _binding: FragmentFirstBinding? = null
+    private lateinit var dogDAO: DogDao
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -31,11 +39,18 @@ class FirstFragment : Fragment() {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
-
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
+//        if (sharedViewModel.dogList.size == 0)
+//            sharedViewModel.dogList = sharedViewModel.loadDogList(db.dogDao().getAll())
+        lifecycleScope.launch {
+
+            Log.i("=======", dogDAO.getAll().size.toString())
+        }
 
         sharedViewModel.dogList.add(AppViewModel.DogInfo("", "AAAAA", "BBBB", "recycleView test"))
         sharedViewModel.dogList.add(AppViewModel.DogInfo("", "AAAAA", "BBBB", "recycleView test2"))
@@ -54,13 +69,12 @@ class FirstFragment : Fragment() {
             }
         }).attachToRecyclerView(dogListView)
 
-//        binding.buttonFirst.setOnClickListener {
-//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-//        }
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        sharedViewModel.searchResult.clear()
         _binding = null
     }
 }

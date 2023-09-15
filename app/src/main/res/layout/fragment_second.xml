@@ -37,10 +37,12 @@
 
         <EditText
             android:id="@+id/editDogName"
-            android:layout_width="wrap_content"
+            android:layout_width="122dp"
             android:layout_height="wrap_content"
             android:hint="@string/example_dog_name"
-            android:textSize="24sp"/>
+            android:textSize="24sp"
+            android:autofillHints=""
+            android:inputType="text" />
 
         <TextView
             android:id="@+id/detailDogBreed"
@@ -57,7 +59,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/example_dog_breed"
-            android:textSize="24sp"/>
+            android:textSize="24sp"
+            android:autofillHints=""
+            android:inputType="text" />
 
         <TextView
             android:id="@+id/detailDogDescription"
@@ -74,7 +78,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/example_dog_description"
-            android:textSize="24sp"/>
+            android:textSize="24sp"
+            android:autofillHints=""
+            android:inputType="text" />
 
     </LinearLayout>
 
