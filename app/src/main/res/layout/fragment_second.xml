@@ -35,14 +35,13 @@
             android:textSize="20sp"
             android:textColor="@color/app_color_theme"/>
 
-        <EditText
-            android:id="@+id/editDogName"
+        <TextView
+            android:id="@+id/dogName"
             android:layout_width="122dp"
             android:layout_height="wrap_content"
             android:hint="@string/example_dog_name"
             android:textSize="24sp"
-            android:autofillHints=""
-            android:inputType="text" />
+            android:autofillHints="" />
 
         <TextView
             android:id="@+id/detailDogBreed"
