@@ -1,9 +1,13 @@
 package com.example.dogspetmanagement
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +24,9 @@ class SecondFragment : Fragment() {
     private val sharedViewModel: AppViewModel by activityViewModels()
     private var _binding: FragmentSecondBinding? = null
     private lateinit var dogDAO: DogDao
+
+    // constant to compare the activity result code
+    private val SELECT_PICTURE = 200
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -41,6 +48,10 @@ class SecondFragment : Fragment() {
         dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
 
         setDetail()
+
+        binding.chooseImageButton.setOnClickListener {
+            imageChooser()
+        }
 
         binding.saveButton.setOnClickListener {
             val editedDogBreed = binding.editDogBreed.text
@@ -70,6 +81,31 @@ class SecondFragment : Fragment() {
         binding.editDogDescription.setText(sharedViewModel.selectedDogInfo.description)
 
         // set image
+    }
+
+    // Code to get image from gallery
+    private fun imageChooser() {
+        val i = Intent()
+        i.type = "image/*"
+        i.action = Intent.ACTION_GET_CONTENT
+        launchSomeActivity.launch(i)
+    }
+
+    var launchSomeActivity = registerForActivityResult<Intent, ActivityResult>(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode
+            == Activity.RESULT_OK
+        ) {
+            val data = result.data
+            // do your operation from here....
+            if (data != null
+                && data.data != null
+            ) {
+                val selectedImageUri = data.data
+                binding.dogImageView.setImageURI(selectedImageUri)
+            }
+        }
     }
 
     override fun onDestroyView() {
