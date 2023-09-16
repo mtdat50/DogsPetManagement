@@ -32,6 +32,10 @@ class FirstFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    init {
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,8 +49,6 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
-//        if (sharedViewModel.dogList.size == 0)
-//            sharedViewModel.dogList = sharedViewModel.loadDogList(db.dogDao().getAll())
         lifecycleScope.launch {
 
             Log.i("=======", dogDAO.getAll().size.toString())
