@@ -48,8 +48,8 @@ class FirstFragment : Fragment() {
             Log.i("=======", dogDAO.getAll().size.toString())
         }
 
-        sharedViewModel.dogList.add(AppViewModel.DogInfo(0, "", "AAAAA", "BBBB", "recycleView test"))
-        sharedViewModel.dogList.add(AppViewModel.DogInfo(1, "", "AAAAA", "BBBB", "recycleView test2"))
+//        sharedViewModel.dogList.add(AppViewModel.DogInfo(0, "", "AAAAA", "BBBB", "recycleView test"))
+//        sharedViewModel.dogList.add(AppViewModel.DogInfo(1, "", "AAAAA", "BBBB", "recycleView test2"))
 
 
 //        (activity as AppCompatActivity).supportActionBar?.hom

@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.dogspetmanagement.database.AppDatabase
+import com.example.dogspetmanagement.database.User
 import com.example.dogspetmanagement.database.UserDao
 import com.example.dogspetmanagement.databinding.ActivityLoginBinding
 import com.example.dogspetmanagement.databinding.ActivityMainBinding

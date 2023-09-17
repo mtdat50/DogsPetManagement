@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.dogspetmanagement.database.AppDatabase
+import com.example.dogspetmanagement.database.Dog
 import com.example.dogspetmanagement.database.DogDao
 import com.example.dogspetmanagement.databinding.FragmentSecondBinding
 import com.example.dogspetmanagement.model.AppViewModel
@@ -76,9 +77,9 @@ class SecondFragment : Fragment() {
 
         binding.saveButton.setOnClickListener {
             // get edited text
-            val editedDogBreed = binding.editDogBreed.text
-            val editedDogDescription = binding.editDogDescription.text
-            val editedDogName = binding.editDogName.text
+            sharedViewModel.selectedDogInfo.name = binding.editDogName.text.toString()
+            sharedViewModel.selectedDogInfo.breed = binding.editDogBreed.text.toString()
+            sharedViewModel.selectedDogInfo.description = binding.editDogDescription.text.toString()
 
             // save and change image path
             // check if user choose another image
@@ -105,10 +106,11 @@ class SecondFragment : Fragment() {
             // save to database
             lifecycleScope.launch {
                 dogDAO.updateDog(
+                    sharedViewModel.selectedDogInfo.id,
                     sharedViewModel.selectedDogInfo.imagePath,
-                    editedDogName.toString(),
-                    editedDogBreed.toString(),
-                    editedDogDescription.toString()
+                    sharedViewModel.selectedDogInfo.name,
+                    sharedViewModel.selectedDogInfo.breed,
+                    sharedViewModel.selectedDogInfo.description
                 )
             }
         }
@@ -116,6 +118,7 @@ class SecondFragment : Fragment() {
 
     private fun setDetail() {
         // set hint
+        binding.editDogName.hint = sharedViewModel.selectedDogInfo.name
         binding.editDogBreed.hint = sharedViewModel.selectedDogInfo.breed
         binding.editDogDescription.hint = sharedViewModel.selectedDogInfo.description
 
