@@ -50,7 +50,12 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-//        R.id.action_add -> true
+        R.id.action_add -> {
+            //  TODO
+            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_SecondFragment)
+            // navigate to second fragment using "add" button
+            true
+        }
         R.id.SearchFragment -> {
             findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_searchFragment)
             true
