@@ -16,6 +16,7 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.dogspetmanagement.databinding.ActivityMainBinding
 import com.example.dogspetmanagement.model.AppViewModel
+import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         }
         else -> super.onOptionsItemSelected(item)
     }
-
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
