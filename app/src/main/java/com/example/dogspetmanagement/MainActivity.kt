@@ -66,17 +66,21 @@ class MainActivity : AppCompatActivity() {
             }
             lifecycleScope.launch {
 //                dogDAO.deleteAll()
-                val lastestUID = dogDAO.getLastUID()
                 val newDog = AppViewModel.DogInfo()
-                if (lastestUID.isEmpty()) {
-                    Log.d("HaoNhat", "the database is null")
-                }
-                else {
-                    newDog.id = lastestUID[0] + 1
-                }
+                dogDAO.insert(Dog(newDog.id, newDog.name, newDog.imagePath, newDog.breed, newDog.description))
+                val lastestUID = dogDAO.getLastUID()
+//                if (lastestUID.isEmpty()) {
+//                    Log.d("HaoNhat", "the database is null")
+//                    newDog.id = 1
+//                }
+//                else {
+//                    Log.d("HaoNhat", lastestUID.toString())
+//                    newDog.id = lastestUID[0] + 1
+//                }
+                newDog.id = lastestUID[0]
+                Log.d("HaoNhat", lastestUID.toString())
                 sharedViewModel.dogList.add(newDog)
                 sharedViewModel.selectedDogInfo = sharedViewModel.dogList[sharedViewModel.dogList.lastIndexOf(newDog)]
-                dogDAO.insert(Dog(sharedViewModel.selectedDogInfo.id, sharedViewModel.selectedDogInfo.name, sharedViewModel.selectedDogInfo.imagePath, sharedViewModel.selectedDogInfo.breed, sharedViewModel.selectedDogInfo.description))
             }
             findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_FirstFragment_to_SecondFragment)
             // navigate to second fragment using "add" button
