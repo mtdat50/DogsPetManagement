@@ -32,4 +32,13 @@ interface DogDao {
     suspend fun updateDog(imagePath: String, dogName: String, dogBreed: String, dogDescription: String)
 
 
+    @Query("SELECT * FROM dog WHERE name like '%' || :keywords || '%'")
+    suspend fun searchByName(keywords: String): List<Dog>
+
+    @Query("SELECT * FROM dog WHERE breed like '%' || :keywords || '%'")
+    suspend fun searchByBreed(keywords: String): List<Dog>
+
+    @Query("SELECT * FROM dog WHERE description like '%' || :keywords || '%'")
+    suspend fun searchByDescription(keywords: String): List<Dog>
+
 }

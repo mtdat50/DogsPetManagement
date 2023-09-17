@@ -16,4 +16,10 @@
     <string name="username">Username</string>
     <string name="dog_pet_management">Dog Pet Management</string>
     <string name="incorrect_username_or_password">Incorrect username or password!</string>
+    <string name="by_name">By name</string>
+    <string name="by_breed">By breed</string>
+    <string name="by_description">By description</string>
+    <string name="key_words">Key words</string>
+    <string name="search">Search</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

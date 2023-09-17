@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dogspetmanagement.model.AppViewModel
 import java.io.File
 
-class ListAdapter(private val shareViewModel: AppViewModel): RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
+class ListAdapter(private val sharedViewModel: AppViewModel): RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
 
     class ListViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         val dogImageView: ImageView? = view.findViewById(R.id.dogImageView)
@@ -32,10 +32,21 @@ class ListAdapter(private val shareViewModel: AppViewModel): RecyclerView.Adapte
         return ListViewHolder(layout)
     }
 
-    override fun getItemCount(): Int = shareViewModel.dogList.size
+    override fun getItemCount(): Int =
+        if (sharedViewModel.viewSearchResult)
+            sharedViewModel.searchResult.size
+        else
+            sharedViewModel.dogList.size
+
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val dogData = shareViewModel.dogList[position]
+        val dogData:AppViewModel.DogInfo =
+            if (sharedViewModel.viewSearchResult)
+                sharedViewModel.searchResult[position]
+            else
+                sharedViewModel.dogList[position]
+
+
         val absolutePath = File(dogData.imagePath).absolutePath
         val bitmapImage = BitmapFactory.decodeFile(absolutePath)
 
@@ -44,7 +55,7 @@ class ListAdapter(private val shareViewModel: AppViewModel): RecyclerView.Adapte
         holder.dogBreedView?.text = dogData.breed
         holder.dogDescriptionView?.text = dogData.description
         holder.itemView.setOnClickListener {
-            shareViewModel.selectedDogInfo = dogData
+            sharedViewModel.selectedDogInfo = dogData
             it.findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
     }

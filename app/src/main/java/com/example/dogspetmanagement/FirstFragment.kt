@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -29,9 +30,6 @@ class FirstFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    init {
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,12 +45,15 @@ class FirstFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
         lifecycleScope.launch {
-
             Log.i("=======", dogDAO.getAll().size.toString())
         }
 
-        sharedViewModel.dogList.add(AppViewModel.DogInfo("", "AAAAA", "BBBB", "recycleView test"))
-        sharedViewModel.dogList.add(AppViewModel.DogInfo("", "AAAAA", "BBBB", "recycleView test2"))
+        sharedViewModel.dogList.add(AppViewModel.DogInfo(0, "", "AAAAA", "BBBB", "recycleView test"))
+        sharedViewModel.dogList.add(AppViewModel.DogInfo(1, "", "AAAAA", "BBBB", "recycleView test2"))
+
+
+//        (activity as AppCompatActivity).supportActionBar?.hom
+
 
         val dogListView = binding.dogList
         val adapter = ListAdapter(sharedViewModel)
@@ -63,12 +64,22 @@ class FirstFragment : Fragment() {
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(v: RecyclerView, h: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
             override fun onSwiped(h: RecyclerView.ViewHolder, dir: Int) {
-                sharedViewModel.dogList.removeAt(h.adapterPosition)
+                if (sharedViewModel.viewSearchResult) {
+                    sharedViewModel.searchResult.removeAt(h.adapterPosition)
+
+                    val id: Int = sharedViewModel.searchResult[h.adapterPosition].id
+                    for (dog in sharedViewModel.dogList)
+                        if (dog.id == id) {
+                            sharedViewModel.dogList.remove(dog)
+                            break
+                        }
+                }
+                else
+                    sharedViewModel.dogList.removeAt(h.adapterPosition)
+
                 adapter.notifyItemRemoved(h.adapterPosition)
             }
         }).attachToRecyclerView(dogListView)
-
-
     }
 
     override fun onDestroyView() {

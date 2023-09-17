@@ -1,51 +1,28 @@
 package com.example.dogspetmanagement
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.example.dogspetmanagement.database.AppDatabase
-import com.example.dogspetmanagement.database.DogDao
-import com.example.dogspetmanagement.database.User
 import com.example.dogspetmanagement.database.UserDao
-import com.example.dogspetmanagement.databinding.FragmentLoginBinding
-import com.example.dogspetmanagement.model.AppViewModel
+import com.example.dogspetmanagement.databinding.ActivityLoginBinding
+import com.example.dogspetmanagement.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
-import android.app.ActionBar as ActionBar
 
-
-class LoginFragment : Fragment() {
-    private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+class LoginActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var userDAO: UserDao
     private var accountList = mutableListOf< Pair< String, String > >()
 
-    init {
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Inflate the layout for this fragment
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        userDAO = AppDatabase.getInstance(requireContext()).userDao()
+        userDAO = AppDatabase.getInstance(this).userDao()
         lifecycleScope.launch {
 //            inserted user:
 //            userDAO.insert(User("user1", "pass1"))
@@ -68,17 +45,10 @@ class LoginFragment : Fragment() {
 
             if (correct) {
                 binding.textView4.visibility = View.INVISIBLE
-                (activity as AppCompatActivity).supportActionBar?.show()
-                findNavController().navigate(R.id.action_loginFragment_to_FirstFragment)
+                startActivity(Intent(this, MainActivity::class.java))
             }
             else
                 binding.textView4.visibility = View.VISIBLE
         }
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 }
