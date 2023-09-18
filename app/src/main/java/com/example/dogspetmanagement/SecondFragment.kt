@@ -1,6 +1,5 @@
 package com.example.dogspetmanagement
 
-import android.R
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -18,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.dogspetmanagement.database.AppDatabase
 import com.example.dogspetmanagement.database.Dog
 import com.example.dogspetmanagement.database.DogDao
@@ -40,12 +40,11 @@ class SecondFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
     private lateinit var dogDAO: DogDao
 
-    // new image data
     private var data : Intent? = null
+    private var addNewDog: Boolean = false
 
     // path to /data/data/yourapp/app_data/imageDir
     private lateinit var cw : ContextWrapper
-    // Create imageDir
     private lateinit var directory : File
 
     // This property is only valid between onCreateView and
@@ -58,25 +57,38 @@ class SecondFragment : Fragment() {
     ): View {
 
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        if (sharedViewModel.selectedDogInfo.id == 0) { // get image if adding new dog
+            addNewDog = true
+            imageChooser()
+        }
+        else
+            setDetail()
         cw = ContextWrapper(requireContext().applicationContext)
         directory = cw.getDir("imageDir", Context.MODE_PRIVATE)
 
         dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
 
-        setDetail()
-//        Log.d("HaoNhat", sharedViewModel.selectedDogInfo.id.toString())
 
-        binding.chooseImageButton.setOnClickListener {
+
+        binding.dogImageView.setOnClickListener {
             imageChooser()
         }
 
         binding.saveButton.setOnClickListener {
+            if (addNewDog) {
+                sharedViewModel.selectedDogInfo.id =
+                    if (sharedViewModel.dogList.isEmpty())
+                        1
+                    else
+                        sharedViewModel.dogList.last().id + 1
+            }
+
             // get edited text
             sharedViewModel.selectedDogInfo.name = binding.editDogName.text.toString()
             sharedViewModel.selectedDogInfo.breed = binding.editDogBreed.text.toString()
@@ -84,9 +96,7 @@ class SecondFragment : Fragment() {
 
             // save and change image path
             // check if user choose another image
-            if (data != null
-                && data!!.data != null
-            ) {
+            if (data != null && data!!.data != null) {
                 // check if previous image exist
                 val preImage = File(sharedViewModel.selectedDogInfo.imagePath)
                 if (preImage.exists()) {
@@ -95,7 +105,7 @@ class SecondFragment : Fragment() {
                 }
 
                 // set new image path
-                val newImageName = generateUniqueID()
+                val newImageName = sharedViewModel.selectedDogInfo.id
                 val newImagePath = "$directory/$newImageName.jpg"
                 sharedViewModel.selectedDogInfo.imagePath = newImagePath
 //                Log.d("HaoNhat", newImagePath)
@@ -104,29 +114,35 @@ class SecondFragment : Fragment() {
                 val bitmapImage = BitmapFactory.decodeStream(input)
                 saveToInternalStorage(bitmapImage)
             }
+
+
             // save to database
             lifecycleScope.launch {
-                dogDAO.updateDog(
-                    sharedViewModel.selectedDogInfo.id,
-                    sharedViewModel.selectedDogInfo.imagePath,
-                    sharedViewModel.selectedDogInfo.name,
-                    sharedViewModel.selectedDogInfo.breed,
-                    sharedViewModel.selectedDogInfo.description
-                )
-//                val allDogs = dogDAO.getAll()
-//                for (dog in allDogs) {
-//                    Log.d("HaoNhat", "${dog.uid} ${dog.imagePath} ${dog.name} ${dog.breed}")
-//                }
+                if (addNewDog) {
+                    sharedViewModel.dogList.add(sharedViewModel.selectedDogInfo)
+                    dogDAO.insert(Dog(
+                        sharedViewModel.selectedDogInfo.id,
+                        sharedViewModel.selectedDogInfo.name,
+                        sharedViewModel.selectedDogInfo.imagePath,
+                        sharedViewModel.selectedDogInfo.breed,
+                        sharedViewModel.selectedDogInfo.description
+                    ))
+                }
+                else
+                    dogDAO.updateDog(
+                        sharedViewModel.selectedDogInfo.id,
+                        sharedViewModel.selectedDogInfo.imagePath,
+                        sharedViewModel.selectedDogInfo.name,
+                        sharedViewModel.selectedDogInfo.breed,
+                        sharedViewModel.selectedDogInfo.description
+                    )
+                findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
             }
+
         }
     }
 
     private fun setDetail() {
-        // set hint
-        binding.editDogName.hint = sharedViewModel.selectedDogInfo.name
-        binding.editDogBreed.hint = sharedViewModel.selectedDogInfo.breed
-        binding.editDogDescription.hint = sharedViewModel.selectedDogInfo.description
-
         // set text
         binding.editDogName.setText(sharedViewModel.selectedDogInfo.name)
         binding.editDogBreed.setText(sharedViewModel.selectedDogInfo.breed)
@@ -143,21 +159,20 @@ class SecondFragment : Fragment() {
     }
 
     // Code to get image from gallery
-    private fun imageChooser() {
+    fun imageChooser() {
         val i = Intent()
         i.type = "image/*"
         i.action = Intent.ACTION_GET_CONTENT
         launchSomeActivity.launch(i)
     }
 
-    var launchSomeActivity = registerForActivityResult<Intent, ActivityResult>(
+    var launchSomeActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
         if (result.resultCode
             == Activity.RESULT_OK
         ) {
             data = result.data
-            // do your operation from here....
             if (data != null
                 && data!!.data != null
             ) {
@@ -167,10 +182,6 @@ class SecondFragment : Fragment() {
         }
     }
 
-    private fun generateUniqueID(): String {
-        val uuid = UUID.randomUUID()
-        return uuid.toString()
-    }
 
     private fun saveToInternalStorage(bitmapImage: Bitmap) {
         val myPath = File(sharedViewModel.selectedDogInfo.imagePath)
@@ -192,6 +203,7 @@ class SecondFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        sharedViewModel.selectedDogInfo = AppViewModel.DogInfo()
         _binding = null
     }
 }

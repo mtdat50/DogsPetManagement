@@ -42,10 +42,8 @@ class MainActivity : AppCompatActivity() {
 
         // Load dogs data from database
         lifecycleScope.launch {
-            val loadDog = dogDAO.getAll()
-            for (dog in loadDog) {
-                sharedViewModel.dogList.add(AppViewModel.DogInfo(dog.uid, dog.imagePath, dog.name, dog.breed, dog.description))
-            }
+            val queryResult = dogDAO.getAll()
+            sharedViewModel.dogList = sharedViewModel.loadDogList(queryResult)
         }
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -68,35 +66,10 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
 
         R.id.action_add -> {
-            //  TODO
-            // init new dog
-//            for (dog in sharedViewModel.dogList) {
-//                Log.d("HaoNhat", "${dog.id} ${dog.name}")
-//            }
-            lifecycleScope.launch {
-//                dogDAO.deleteAll()
-                val newDog = AppViewModel.DogInfo()
-                dogDAO.insert(Dog(newDog.id, newDog.name, newDog.imagePath, newDog.breed, newDog.description))
-                val lastestUID = dogDAO.getLastUID()
-//                if (lastestUID.isEmpty()) {
-//                    Log.d("HaoNhat", "the database is null")
-//                    newDog.id = 1
-//                }
-//                else {
-//                    Log.d("HaoNhat", lastestUID.toString())
-//                    newDog.id = lastestUID[0] + 1
-//                }
-                newDog.id = lastestUID[0]
-//                Log.d("HaoNhat", lastestUID[0].toString())
-                sharedViewModel.dogList.add(newDog)
-//                Log.d("HaoNhat", "Last index of newDog: ${sharedViewModel.dogList.lastIndexOf(newDog)}")
-                sharedViewModel.selectedDogInfo = sharedViewModel.dogList[sharedViewModel.dogList.lastIndexOf(newDog) - 1]
-            }
             findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_FirstFragment_to_SecondFragment)
-            // navigate to second fragment using "add" button
             true
         }
-        R.id.SearchFragment -> {
+        R.id.action_search -> {
             findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_searchFragment)
             true
         }

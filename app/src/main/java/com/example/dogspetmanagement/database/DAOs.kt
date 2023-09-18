@@ -28,8 +28,6 @@ interface DogDao {
     @Query("SELECT * FROM dog")
     suspend fun getAll(): List<Dog>
 
-    @Query("SELECT uid FROM dog ORDER BY uid DESC LIMIT 1")
-    suspend fun getLastUID(): List<Int>
 
     @Query("SELECT uid FROM dog ORDER BY uid DESC")
     suspend fun getAllUID(): List<Int>
