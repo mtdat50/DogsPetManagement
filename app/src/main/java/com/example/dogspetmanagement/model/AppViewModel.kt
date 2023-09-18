@@ -28,7 +28,6 @@ class AppViewModel: ViewModel() {
 
     fun loadDogList(queryResult: List<Dog>): MutableList<DogInfo>  {
         val convertedList = mutableListOf<DogInfo>()
-        dogDAO
         for (dog in queryResult)
             convertedList.add(DogInfo(dog.uid, dog.imagePath, dog.name, dog.breed, dog.description))
 
