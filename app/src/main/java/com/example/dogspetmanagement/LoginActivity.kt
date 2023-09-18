@@ -34,9 +34,10 @@ class LoginActivity : AppCompatActivity() {
 
         userDAO = AppDatabase.getInstance(this).userDao()
 
-//        generateSampleData()
 
         lifecycleScope.launch {
+//            generateSampleData()
+
             val queryResult = userDAO.getAll()
             for (user in queryResult)
                 accountList.add(Pair(user.username, user.password))
@@ -60,41 +61,40 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun generateSampleData() {
+    private suspend fun generateSampleData() {
         // path to /data/data/yourapp/app_data/imageDir
-        var cw = ContextWrapper(this.applicationContext)
-        var directory = cw.getDir("imageDir", Context.MODE_PRIVATE)
+        val cw = ContextWrapper(this.applicationContext)
+        val directory = cw.getDir("imageDir", Context.MODE_PRIVATE)
         var bitmapImage: Bitmap?
         var imageSavePath: String
 
         dogDAO = AppDatabase.getInstance(this).dogDao()
 
-        lifecycleScope.launch {
-            userDAO.insert(User("user1", "pass1"))
-            userDAO.insert(User("user2", "pass2"))
-            userDAO.insert(User("user3", "pass3"))
+        userDAO.insert(User("user1", "pass1"))
+        userDAO.insert(User("user2", "pass2"))
+        userDAO.insert(User("user3", "pass3"))
 
 
-            bitmapImage = BitmapFactory.decodeResource(this@LoginActivity.resources, R.drawable.n02085620_952)
-            imageSavePath = "$directory/1.jpg"
-            saveToInternalStorage(bitmapImage, imageSavePath)
-            dogDAO.insert(Dog(1, "dog1", imageSavePath, "Chihuahua", "description1"))
+        bitmapImage = BitmapFactory.decodeResource(this@LoginActivity.resources, R.drawable.n02085620_952)
+        imageSavePath = "$directory/1.jpg"
+        saveToInternalStorage(bitmapImage, imageSavePath)
+        dogDAO.insert(Dog(1, "dog1", imageSavePath, "Chihuahua", "description1"))
 
-            bitmapImage = BitmapFactory.decodeResource(this@LoginActivity.resources, R.drawable.n02085936_426)
-            imageSavePath = "$directory/2.jpg"
-            saveToInternalStorage(bitmapImage, imageSavePath)
-            dogDAO.insert(Dog(2, "dog2", imageSavePath, "Maltese", "description2"))
+        bitmapImage = BitmapFactory.decodeResource(this@LoginActivity.resources, R.drawable.n02085936_426)
+        imageSavePath = "$directory/2.jpg"
+        saveToInternalStorage(bitmapImage, imageSavePath)
+        dogDAO.insert(Dog(2, "dog2", imageSavePath, "Maltese", "description2"))
 
-            bitmapImage = BitmapFactory.decodeResource(this@LoginActivity.resources, R.drawable.n02088466_4825)
-            imageSavePath = "$directory/3.jpg"
-            saveToInternalStorage(bitmapImage, imageSavePath)
-            dogDAO.insert(Dog(3, "dog3", imageSavePath, "Bloodhound", "description3"))
+        bitmapImage = BitmapFactory.decodeResource(this@LoginActivity.resources, R.drawable.n02088466_4825)
+        imageSavePath = "$directory/3.jpg"
+        saveToInternalStorage(bitmapImage, imageSavePath)
+        dogDAO.insert(Dog(3, "dog3", imageSavePath, "Bloodhound", "description3"))
 
-            bitmapImage = BitmapFactory.decodeResource(this@LoginActivity.resources, R.drawable.n02091831_749)
-            imageSavePath = "$directory/4.jpg"
-            saveToInternalStorage(bitmapImage, imageSavePath)
-            dogDAO.insert(Dog(4, "dog4", imageSavePath, "Saluki", "description4"))
-        }
+        bitmapImage = BitmapFactory.decodeResource(this@LoginActivity.resources, R.drawable.n02091831_749)
+        imageSavePath = "$directory/4.jpg"
+        saveToInternalStorage(bitmapImage, imageSavePath)
+        dogDAO.insert(Dog(4, "dog4", imageSavePath, "Saluki", "description4"))
+
     }
     private fun saveToInternalStorage(bitmapImage: Bitmap?, path: String) {
         val myPath = File(path)
