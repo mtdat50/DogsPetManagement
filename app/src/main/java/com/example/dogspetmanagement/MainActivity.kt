@@ -40,6 +40,13 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         dogDAO = AppDatabase.getInstance(this).dogDao()
 
+        // Load dogs data from database
+        lifecycleScope.launch {
+            val loadDog = dogDAO.getAll()
+            for (dog in loadDog) {
+                sharedViewModel.dogList.add(AppViewModel.DogInfo(dog.uid, dog.imagePath, dog.name, dog.breed, dog.description))
+            }
+        }
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
@@ -50,6 +57,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
+
+        findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_to_FirstFragment)
         return true
     }
 
@@ -61,9 +70,9 @@ class MainActivity : AppCompatActivity() {
         R.id.action_add -> {
             //  TODO
             // init new dog
-            for (dog in sharedViewModel.dogList) {
-                Log.d("HaoNhat", "${dog.id} ${dog.name}")
-            }
+//            for (dog in sharedViewModel.dogList) {
+//                Log.d("HaoNhat", "${dog.id} ${dog.name}")
+//            }
             lifecycleScope.launch {
 //                dogDAO.deleteAll()
                 val newDog = AppViewModel.DogInfo()
@@ -78,9 +87,10 @@ class MainActivity : AppCompatActivity() {
 //                    newDog.id = lastestUID[0] + 1
 //                }
                 newDog.id = lastestUID[0]
-                Log.d("HaoNhat", lastestUID.toString())
+//                Log.d("HaoNhat", lastestUID[0].toString())
                 sharedViewModel.dogList.add(newDog)
-                sharedViewModel.selectedDogInfo = sharedViewModel.dogList[sharedViewModel.dogList.lastIndexOf(newDog)]
+//                Log.d("HaoNhat", "Last index of newDog: ${sharedViewModel.dogList.lastIndexOf(newDog)}")
+                sharedViewModel.selectedDogInfo = sharedViewModel.dogList[sharedViewModel.dogList.lastIndexOf(newDog) - 1]
             }
             findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_FirstFragment_to_SecondFragment)
             // navigate to second fragment using "add" button

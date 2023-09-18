@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogspetmanagement.database.AppDatabase
+import com.example.dogspetmanagement.database.Dog
 import com.example.dogspetmanagement.database.DogDao
 import com.example.dogspetmanagement.databinding.FragmentFirstBinding
 import com.example.dogspetmanagement.model.AppViewModel
@@ -44,6 +45,7 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
+
         lifecycleScope.launch {
             Log.i("=======", dogDAO.getAll().size.toString())
         }
@@ -65,7 +67,10 @@ class FirstFragment : Fragment() {
             override fun onMove(v: RecyclerView, h: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
             override fun onSwiped(h: RecyclerView.ViewHolder, dir: Int) {
                 if (sharedViewModel.viewSearchResult) {
-                    sharedViewModel.searchResult.removeAt(h.adapterPosition)
+                    val deletedDogInSearchResult = sharedViewModel.searchResult[h.adapterPosition]
+                    lifecycleScope.launch {
+                        dogDAO.delete(Dog(deletedDogInSearchResult.id, deletedDogInSearchResult.imagePath, deletedDogInSearchResult.name, deletedDogInSearchResult.breed, deletedDogInSearchResult.description))
+                    }
 
                     val id: Int = sharedViewModel.searchResult[h.adapterPosition].id
                     for (dog in sharedViewModel.dogList)
@@ -73,10 +78,16 @@ class FirstFragment : Fragment() {
                             sharedViewModel.dogList.remove(dog)
                             break
                         }
-                }
-                else
-                    sharedViewModel.dogList.removeAt(h.adapterPosition)
 
+                    sharedViewModel.searchResult.removeAt(h.adapterPosition)
+                }
+                else {
+                    val deletedDogInList = sharedViewModel.dogList[h.adapterPosition]
+                    lifecycleScope.launch {
+                        dogDAO.delete(Dog(deletedDogInList.id, deletedDogInList.imagePath, deletedDogInList.name, deletedDogInList.breed, deletedDogInList.description))
+                    }
+                    sharedViewModel.dogList.removeAt(h.adapterPosition)
+                }
                 adapter.notifyItemRemoved(h.adapterPosition)
             }
         }).attachToRecyclerView(dogListView)

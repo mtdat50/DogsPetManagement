@@ -70,6 +70,7 @@ class SecondFragment : Fragment() {
         dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
 
         setDetail()
+//        Log.d("HaoNhat", sharedViewModel.selectedDogInfo.id.toString())
 
         binding.chooseImageButton.setOnClickListener {
             imageChooser()
@@ -112,6 +113,10 @@ class SecondFragment : Fragment() {
                     sharedViewModel.selectedDogInfo.breed,
                     sharedViewModel.selectedDogInfo.description
                 )
+//                val allDogs = dogDAO.getAll()
+//                for (dog in allDogs) {
+//                    Log.d("HaoNhat", "${dog.uid} ${dog.imagePath} ${dog.name} ${dog.breed}")
+//                }
             }
         }
     }

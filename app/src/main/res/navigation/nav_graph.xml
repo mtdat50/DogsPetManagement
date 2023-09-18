@@ -5,6 +5,9 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/FirstFragment">
 
+    <action
+        android:id="@+id/action_to_FirstFragment"
+        app:destination="@id/FirstFragment" />
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.dogspetmanagement.FirstFragment"

@@ -34,7 +34,7 @@ interface DogDao {
     @Query("SELECT uid FROM dog ORDER BY uid DESC")
     suspend fun getAllUID(): List<Int>
 
-    @Query("UPDATE dog SET imagePath = (:imagePath) AND name = (:dogName) AND breed = (:dogBreed) AND description = (:dogDescription) WHERE uid = (:imageID)")
+    @Query("UPDATE dog SET imagePath = (:imagePath), name = (:dogName), breed = (:dogBreed), description = (:dogDescription) WHERE uid = (:imageID)")
     suspend fun updateDog(imageID: Int, imagePath: String, dogName: String, dogBreed: String, dogDescription: String)
 
 
