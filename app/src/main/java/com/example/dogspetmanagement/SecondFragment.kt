@@ -6,12 +6,15 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.scale
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,11 +23,16 @@ import com.example.dogspetmanagement.database.AppDatabase
 import com.example.dogspetmanagement.database.Dog
 import com.example.dogspetmanagement.database.DogDao
 import com.example.dogspetmanagement.databinding.FragmentSecondBinding
+import com.example.dogspetmanagement.ml.ConvertedTfmodel
 import com.example.dogspetmanagement.model.AppViewModel
 import kotlinx.coroutines.launch
+import org.tensorflow.lite.DataType
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 
 /**
@@ -34,6 +42,7 @@ class SecondFragment : Fragment() {
     private val sharedViewModel: AppViewModel by activityViewModels()
     private var _binding: FragmentSecondBinding? = null
     private lateinit var dogDAO: DogDao
+    private lateinit var model: ConvertedTfmodel
 
     private var data : Intent? = null
     private var addNewDog: Boolean = false
@@ -68,6 +77,7 @@ class SecondFragment : Fragment() {
         directory = cw.getDir("imageDir", Context.MODE_PRIVATE)
 
         dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
+        model = ConvertedTfmodel.newInstance(requireContext())
 
 
 
@@ -173,6 +183,23 @@ class SecondFragment : Fragment() {
             ) {
                 val selectedImageUri = data!!.data
                 binding.dogImageView.setImageURI(selectedImageUri)
+
+                val source = ImageDecoder.createSource(activity?.contentResolver!!, selectedImageUri!!)
+                val bitmapImage = ImageDecoder.decodeBitmap(source)
+                                    .copy(Bitmap.Config.RGBA_F16, true) // for decodeBitmap return immutable
+                                    .scale(224, 224)
+
+//                create input
+                val byteBuffer = bitmapToBytebuffer(bitmapImage)
+                val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
+                inputFeature0.loadBuffer(byteBuffer)
+
+//                run model and gets result
+                val outputs = model.process(inputFeature0)
+                val outputArray = outputs.outputFeature0AsTensorBuffer.floatArray
+                val indexOfMaxElement = outputArray.indices.maxBy { outputArray[it] }
+
+                binding.editDogBreed.setText(DogClasses.DOG_CLASSES[indexOfMaxElement])
             }
         }
     }
@@ -194,6 +221,24 @@ class SecondFragment : Fragment() {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun bitmapToBytebuffer(image: Bitmap): ByteBuffer {
+        val byteBuffer = ByteBuffer.allocate(224 * 224 * 3 * 4)
+        byteBuffer.order(ByteOrder.nativeOrder())
+        val pixelValues = IntArray(224 * 224 * 3)
+        image.getPixels(pixelValues, 0, 224, 0, 0, 224, 224)
+
+//        normalization
+        for (i in 0..223)
+            for (j in 0..223) {
+                val pixel = pixelValues[i * 223 + j]
+                byteBuffer.putFloat(((pixel shr 16) and 0xFF) / 225f)
+                byteBuffer.putFloat(((pixel shr 8)  and 0xFF) / 225f)
+                byteBuffer.putFloat((pixel          and 0xFF) / 225f)
+            }
+
+        return byteBuffer
     }
 
     override fun onDestroyView() {
