@@ -7,11 +7,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -25,11 +23,8 @@ import com.example.dogspetmanagement.databinding.FragmentSecondBinding
 import com.example.dogspetmanagement.model.AppViewModel
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.UUID
 
 
 /**
@@ -101,7 +96,7 @@ class SecondFragment : Fragment() {
                 val preImage = File(sharedViewModel.selectedDogInfo.imagePath)
                 if (preImage.exists()) {
                     // then delete it
-                    val deleted = preImage.delete()
+                    preImage.delete()
                 }
 
                 // set new image path
@@ -159,14 +154,14 @@ class SecondFragment : Fragment() {
     }
 
     // Code to get image from gallery
-    fun imageChooser() {
+    private fun imageChooser() {
         val i = Intent()
         i.type = "image/*"
         i.action = Intent.ACTION_GET_CONTENT
         launchSomeActivity.launch(i)
     }
 
-    var launchSomeActivity = registerForActivityResult(
+    private var launchSomeActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
         if (result.resultCode

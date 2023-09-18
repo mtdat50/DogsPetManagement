@@ -1,18 +1,15 @@
 package com.example.dogspetmanagement.model
 
 import androidx.lifecycle.ViewModel
-import androidx.room.Room
 import com.example.dogspetmanagement.database.Dog
-import com.example.dogspetmanagement.database.DogDao
 
 class AppViewModel: ViewModel() {
-    private lateinit var dogDAO: DogDao
 
-    class DogInfo(private val _id: Int = 0,
-                  private val _imagePath: String = "",
-                  private var _name: String = "",
-                  private var _breed: String = "",
-                  private var _description: String = "") {
+    class DogInfo(_id: Int = 0,
+                    _imagePath: String = "",
+                    _name: String = "",
+                    _breed: String = "",
+                    _description: String = "") {
 
         var id: Int = _id
         var imagePath: String = _imagePath

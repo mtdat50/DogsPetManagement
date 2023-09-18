@@ -1,27 +1,20 @@
 package com.example.dogspetmanagement
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.dogspetmanagement.database.AppDatabase
-import com.example.dogspetmanagement.database.Dog
 import com.example.dogspetmanagement.database.DogDao
 import com.example.dogspetmanagement.databinding.ActivityMainBinding
 import com.example.dogspetmanagement.model.AppViewModel
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
 

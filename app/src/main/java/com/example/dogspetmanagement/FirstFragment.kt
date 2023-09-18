@@ -1,11 +1,9 @@
 package com.example.dogspetmanagement
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -45,10 +43,6 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dogDAO = AppDatabase.getInstance(requireContext()).dogDao()
-
-//        sharedViewModel.dogList.add(AppViewModel.DogInfo(0, "", "AAAAA", "BBBB", "recycleView test"))
-//        sharedViewModel.dogList.add(AppViewModel.DogInfo(1, "", "AAAAA", "BBBB", "recycleView test2"))
-
 
         val dogListView = binding.dogList
         val adapter = ListAdapter(sharedViewModel)
